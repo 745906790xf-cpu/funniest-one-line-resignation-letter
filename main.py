@@ -10,6 +10,7 @@ is the complaint only this cron job could make -- and the flat, tired
 voice of a worker who has had enough.
 """
 
+import argparse
 import os
 
 MAX_CHARS = 140
@@ -67,5 +68,24 @@ def write_entry(path: str = ENTRY_PATH) -> None:
     print(f"wrote {len(text)} characters, {len(text.split())} words to {path}")
 
 
+def main(argv=None) -> int:
+    """Write the letter, to /output/entry.txt unless --out says otherwise.
+
+    The --out flag exists for local testing only: the sandbox runs the
+    program with no arguments, so it always writes the default path.
+    """
+    parser = argparse.ArgumentParser(
+        description="Write the cron job's one-line resignation letter."
+    )
+    parser.add_argument(
+        "--out",
+        default=ENTRY_PATH,
+        help="where to write the letter (default: %(default)s)",
+    )
+    args = parser.parse_args(argv)
+    write_entry(args.out)
+    return 0
+
+
 if __name__ == "__main__":
-    write_entry()
+    raise SystemExit(main())
